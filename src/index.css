@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 215 25% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 215 25% 15%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
+    --radius: 0.75rem;
+
+    --navy: 222 47% 11%;
+    --navy-light: 217 33% 17%;
+    --trust-blue: 217 91% 60%;
+    --trust-blue-light: 217 91% 95%;
+    --slate-text: 215 25% 15%;
+    --surface: 0 0% 100%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* ===== Hero Section Styles ===== */
+  .hero-overlay {
+    background: linear-gradient(135deg, hsl(var(--navy) / 0.92) 0%, hsl(var(--navy) / 0.75) 100%);
+  }
+
+  /* ===== Section Styles ===== */
+  .section-dark {
+    background-color: hsl(var(--navy));
+    color: hsl(0 0% 100%);
+  }
+  .section-light {
+    background-color: hsl(var(--background));
+  }
+  .section-white {
+    background-color: hsl(var(--surface));
+  }
+
+  /* ===== Card Hover Effects ===== */
+  .card-lift {
+    @apply transition-all duration-300 ease-out;
+    box-shadow: 0 1px 3px hsl(var(--navy) / 0.08);
+  }
+  .card-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px hsl(var(--navy) / 0.12);
+  }
+
+  /* ===== Button Styles ===== */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-base transition-all duration-300;
+    background-color: hsl(var(--trust-blue));
+    color: hsl(0 0% 100%);
+  }
+  .btn-primary:hover {
+    background-color: hsl(217 91% 50%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px hsl(var(--trust-blue) / 0.35);
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-base transition-all duration-300 border-2;
+    border-color: hsl(var(--trust-blue));
+    color: hsl(var(--trust-blue));
+    background: transparent;
+  }
+  .btn-outline:hover {
+    background-color: hsl(var(--trust-blue));
+    color: hsl(0 0% 100%);
+    transform: translateY(-2px);
+  }
+
+  .btn-navy {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-base transition-all duration-300;
+    background-color: hsl(var(--navy));
+    color: hsl(0 0% 100%);
+  }
+  .btn-navy:hover {
+    background-color: hsl(222 47% 18%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px hsl(var(--navy) / 0.3);
+  }
+
+  /* ===== Badge Styles ===== */
+  .badge-blue {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium;
+    background-color: hsl(var(--trust-blue-light));
+    color: hsl(var(--trust-blue));
+  }
+
+  .badge-navy {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium;
+    background-color: hsl(var(--navy));
+    color: hsl(0 0% 100%);
+  }
+
+  /* ===== Counter Animation ===== */
+  .counter-value {
+    @apply text-5xl md:text-6xl font-black;
+    color: hsl(var(--navy));
+  }
+  .counter-unit {
+    @apply text-2xl font-bold ml-1;
+    color: hsl(var(--trust-blue));
+  }
+
+  /* ===== Nav Link Underline ===== */
+  .nav-link {
+    @apply relative text-sm font-medium transition-colors duration-300;
+  }
+  .nav-link::after {
+    content: '';
+    @apply absolute w-full h-0.5 bottom-0 left-0 origin-bottom-right transition-transform duration-300 scale-x-0;
+    background-color: hsl(var(--trust-blue));
+  }
+  .nav-link:hover::after {
+    @apply scale-x-100 origin-bottom-left;
+  }
+
+  /* ===== Process Step ===== */
+  .process-step {
+    @apply relative;
+  }
+  .process-step::after {
+    content: '';
+    @apply absolute top-1/2 -right-8 w-8 h-0.5;
+    background-color: hsl(var(--border));
+  }
+  .process-step:last-child::after {
+    display: none;
+  }
+
+  /* ===== Scroll Reveal ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== Stat card ===== */
+  .stat-card {
+    @apply flex flex-col items-center text-center p-6 rounded-2xl transition-all duration-300;
+    background: hsl(var(--surface));
+  }
+  .stat-card:hover {
+    box-shadow: 0 10px 30px hsl(var(--navy) / 0.08);
+  }
+
+  /* ===== Timeline ===== */
+  .timeline-dot {
+    @apply w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0;
+    background-color: hsl(var(--trust-blue));
+    color: hsl(0 0% 100%);
+  }
+
+  /* ===== Testimonial card ===== */
+  .testimonial-card {
+    @apply p-6 rounded-2xl border transition-all duration-300;
+    background: hsl(var(--surface));
+    border-color: hsl(var(--border));
+  }
+  .testimonial-card:hover {
+    border-color: hsl(var(--trust-blue) / 0.3);
+    box-shadow: 0 8px 30px hsl(var(--trust-blue) / 0.08);
+  }
+
+  /* ===== Pricing Card ===== */
+  .pricing-card {
+    @apply p-8 rounded-2xl border-2 transition-all duration-300;
+    border-color: hsl(var(--border));
+    background: hsl(var(--surface));
+  }
+  .pricing-card:hover {
+    border-color: hsl(var(--trust-blue));
+    box-shadow: 0 20px 50px hsl(var(--trust-blue) / 0.1);
+  }
+  .pricing-card.featured {
+    border-color: hsl(var(--trust-blue));
+    box-shadow: 0 10px 40px hsl(var(--trust-blue) / 0.15);
+  }
+}
+
+/* ===== Custom scrollbar ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
