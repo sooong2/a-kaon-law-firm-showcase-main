@@ -137,21 +137,31 @@ const CaseResponsePage = () => {
               },
             ].map((category, i) => (
               <ScrollReveal key={i} delay={i * 150}>
-                <div className="card-lift rounded-2xl p-8 bg-surface border border-border">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-14 h-14 rounded-xl bg-trust-blue-light flex items-center justify-center">
-                      <category.icon className="w-7 h-7 text-trust-blue" />
+                <div className="relative overflow-hidden rounded-3xl border border-border bg-[#1f2e4a] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_14px_34px_-22px_rgba(15,23,42,0.35)]">
+                  {/** 상단 블루 그라디언트 헤더 (네온 X, 은은한 톤) */}
+                  <div className="relative px-6 py-5 sm:px-7">
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#3d83f5]/55 via-[#3d83f5]/35 to-transparent" aria-hidden />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(255,255,255,0.18),transparent_55%)]" aria-hidden />
+                    <div className="relative flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/10 backdrop-blur-sm">
+                        <category.icon className="h-5 w-5 text-primary-foreground" />
+                      </div>
+                      <h3 className="text-base sm:text-lg font-bold text-primary-foreground">{category.title}</h3>
                     </div>
-                    <h3 className="text-xl font-bold text-foreground">{category.title}</h3>
                   </div>
-                  <ul className="space-y-3">
-                    {category.items.map((item, j) => (
-                      <li key={j} className="flex items-center gap-3 text-sm">
-                        <span className="w-1.5 h-1.5 rounded-full bg-trust-blue shrink-0" />
-                        <span className="text-foreground">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+
+                  {/** 본문: 기존 내용 그대로 (리스트) */}
+                  <div className="px-6 pb-6 sm:px-7 sm:pb-7">
+                    <div className="h-px w-full bg-white/10" aria-hidden />
+                    <ul className="mt-5 space-y-3">
+                      {category.items.map((item, j) => (
+                        <li key={j} className="flex items-start gap-3 text-sm leading-relaxed">
+                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#3d83f5]/90" />
+                          <span className="text-primary-foreground/85 break-keep">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </ScrollReveal>
             ))}

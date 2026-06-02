@@ -1,8 +1,98 @@
 /* ===== 노무법인 가온 - 홈페이지 ===== */
-import { Shield, Users, Scale, FileText, CheckCircle, ChevronRight, TrendingUp, Building, Award, ArrowRight, Star } from "lucide-react";
+import { useEffect, useId, useMemo, useState, type ReactNode } from "react";
+import { Shield, Users, Scale, CheckCircle, ChevronRight, Building, Award, ArrowRight, Star } from "lucide-react";
 import heroHome from "@/assets/hero-home.jpg";
+import banner2 from "@/assets/banner2.jpg";
 import ScrollReveal from "@/components/ScrollReveal";
 import CountUp from "@/components/CountUp";
+import ResponseProcessSection from "@/components/ResponseProcessSection";
+import LaborRiskRadarCtaSection from "@/components/LaborRiskRadarCtaSection";
+import LaborRiskCaseStudiesSection from "@/components/LaborRiskCaseStudiesSection";
+import RiskStoryTimelineSection from "@/components/RiskStoryTimelineSection";
+import RiskDataEvidenceSection from "@/components/RiskDataEvidenceSection";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper/modules";
+import "swiper/css";
+import { Link } from "react-router-dom";
+
+/** 메인 통계 — 서비스 상세 DATA 도넛과 동일한 링·그라데이션·채움 애니메이션 */
+function HomeStatDonut({
+  label,
+  caption,
+  ringPercent,
+  delayMs = 0,
+  children,
+}: {
+  label: string;
+  caption: string;
+  ringPercent: number;
+  delayMs?: number;
+  children: ReactNode;
+}) {
+  const reactId = useId();
+  const gradId = useMemo(() => `home-stat-ring-${reactId.replace(/:/g, "")}`, [reactId]);
+  const size = 172;
+  const stroke = 7;
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  const pct = Math.min(100, Math.max(0, ringPercent));
+  const targetOffset = c * (1 - pct / 100);
+  const [dashOffset, setDashOffset] = useState(c);
+
+  useEffect(() => {
+    setDashOffset(c);
+    const t = window.setTimeout(() => setDashOffset(targetOffset), delayMs + 80);
+    return () => window.clearTimeout(t);
+  }, [c, targetOffset, delayMs, label, ringPercent]);
+
+  return (
+    <div className="flex w-full flex-col items-center">
+      <div className="relative mx-auto aspect-square w-full max-w-[180px] shrink-0">
+        <svg viewBox={`0 0 ${size} ${size}`} className="h-full w-full -rotate-90" aria-hidden>
+          <defs>
+            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#3d83f5" />
+              <stop offset="55%" stopColor="#5cadff" />
+              <stop offset="100%" stopColor="#7ec8fa" />
+            </linearGradient>
+          </defs>
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={r}
+            fill="none"
+            className="stroke-neutral-900/12"
+            strokeWidth={stroke}
+          />
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={r}
+            fill="none"
+            stroke={`url(#${gradId})`}
+            strokeWidth={stroke}
+            strokeLinecap="round"
+            strokeDasharray={c}
+            strokeDashoffset={dashOffset}
+            style={{
+              transition: "stroke-dashoffset 1.45s cubic-bezier(0.22, 1, 0.36, 1)",
+            }}
+          />
+        </svg>
+        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-4 pb-3 pt-2 text-center">
+          <p className="line-clamp-2 text-[10px] font-bold leading-snug text-foreground md:text-[11px]">{label}</p>
+          <div className="mt-2 flex flex-wrap items-baseline justify-center gap-x-0.5">{children}</div>
+          <p
+            className="mt-2 line-clamp-2 text-[10px] font-semibold leading-tight md:text-[11px]"
+            style={{ color: "#3d83f5" }}
+          >
+            {caption}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const HomePage = () => {
   return (
@@ -34,9 +124,9 @@ const HomePage = () => {
               서비스 알아보기
               <ChevronRight className="w-5 h-5" />
             </a>
-            <a href="#contact" className="btn-outline border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground hover:text-navy text-lg px-10 py-5">
+            <Link to="/inquiry" className="btn-outline border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground hover:text-navy text-lg px-10 py-5">
               무료 상담 신청
-            </a>
+            </Link>
           </div>
 
           {/* Hero Stats */}
@@ -57,48 +147,16 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ===== Safety Check Section ===== */}
-      <section className="section-white py-24">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-16 items-center max-w-5xl mx-auto">
-            <ScrollReveal>
-              <span className="badge-blue mb-4">● RISK CHECK</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight mt-4">
-                우리 회사
-                <br />
-                지금 안전한가요?
-              </h2>
-              <p className="text-muted-foreground mt-4 leading-relaxed">
-                매년 증가하는 노동 관련 분쟁과 변화하는 법규 속에서,
-                사전 예방이 최선의 대응입니다.
-              </p>
-            </ScrollReveal>
-            <ScrollReveal delay={200}>
-              <div className="space-y-4">
-                {[
-                  { icon: Shield, value: "73", unit: "%", label: "기업 노무 리스크 비율", desc: "사전 점검 없는 기업" },
-                  { icon: Scale, value: "90", unit: "만원+", label: "평균 과태료 금액", desc: "근로기준법 위반 시" },
-                  { icon: TrendingUp, value: "2800", unit: "건+", label: "연간 노동 분쟁", desc: "매년 증가 추세" },
-                ].map((item, i) => (
-                  <div key={i} className="card-lift rounded-2xl p-5 flex items-center gap-5 bg-surface border border-border">
-                    <div className="w-14 h-14 rounded-xl bg-trust-blue-light flex items-center justify-center shrink-0">
-                      <item.icon className="w-7 h-7 text-trust-blue" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs text-muted-foreground">{item.desc}</p>
-                      <p className="text-sm font-medium text-foreground">{item.label}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-2xl font-black text-navy">{item.value}</span>
-                      <span className="text-sm font-bold text-trust-blue ml-1">{item.unit}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
+      {/* ===== 기업 노무 리스크 안내 — 스토리형 타임라인 ===== */}
+      <RiskStoryTimelineSection />
+
+      <RiskDataEvidenceSection />
+
+      <LaborRiskRadarCtaSection />
+
+      <LaborRiskCaseStudiesSection />
+
+      <ResponseProcessSection />
 
       {/* ===== 3-Step Solution Section ===== */}
       <section className="section-dark py-24">
@@ -182,20 +240,40 @@ const HomePage = () => {
               <span className="text-trust-blue">가온과 함께</span>
             </h2>
           </ScrollReveal>
-          <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto mt-12">
+          <div className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-8">
             {[
-              { value: 191, unit: "개사", label: "현재 관리 기업 수" },
-              { value: 133, unit: "건+", label: "연간 사건 처리" },
-              { value: 7, unit: "년", label: "평균 경력" },
+              {
+                value: 191,
+                unit: "개사",
+                label: "현재 관리 기업 수",
+                ringPercent: 94,
+                caption: "누적 관리 기업",
+              },
+              {
+                value: 133,
+                unit: "건+",
+                label: "연간 사건 처리",
+                ringPercent: 86,
+                caption: "사건 대응 실적",
+              },
+              {
+                value: 7,
+                unit: "년",
+                label: "평균 경력",
+                ringPercent: 72,
+                caption: "전문성·경험",
+              },
             ].map((stat, i) => (
               <ScrollReveal key={i} delay={i * 100}>
-                <div className="stat-card">
-                  <div className="mb-2">
-                    <CountUp end={stat.value} className="counter-value" />
-                    <span className="counter-unit">{stat.unit}</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                </div>
+                <HomeStatDonut label={stat.label} caption={stat.caption} ringPercent={stat.ringPercent} delayMs={i * 80}>
+                  <CountUp
+                    end={stat.value}
+                    className="text-[1.65rem] font-black tabular-nums text-foreground md:text-[1.85rem]"
+                  />
+                  <span className="text-sm font-bold" style={{ color: "#3d83f5" }}>
+                    {stat.unit}
+                  </span>
+                </HomeStatDonut>
               </ScrollReveal>
             ))}
           </div>
@@ -206,40 +284,131 @@ const HomePage = () => {
       <section className="section-light py-24" id="services">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <div className="text-center mb-16">
+            <div className="text-center mb-12 max-w-[700px] mx-auto">
               <span className="badge-blue">● SERVICES</span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-4">전문 서비스 영역</h2>
               <p className="text-muted-foreground mt-3">기업 맞춤형 노무 솔루션을 제공합니다</p>
             </div>
           </ScrollReveal>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {[
-              { icon: FileText, title: "노무체계정비 컨설팅", desc: "취업규칙, 근로계약서, 임금체계 등 노무제도 전반 정비", tag: "BEST" },
-              { icon: Scale, title: "HR 컨설팅", desc: "인사제도, 평가·보상체계, 조직문화 진단 및 개선" },
-              { icon: Shield, title: "중대재해처벌법 대응", desc: "안전보건관리체계 구축 및 정기 점검 컨설팅" },
-              { icon: Users, title: "도급/파견 컨설팅", desc: "적법한 도급·파견 구조 설계 및 리스크 점검" },
-              { icon: Building, title: "ESG 진단 및 구축", desc: "ESG 기준에 맞는 근로환경 및 거버넌스 체계 구축" },
-              { icon: Award, title: "고용노동부 컨설팅", desc: "정부지원사업 연계 및 노동부 근로감독 대응" },
-            ].map((service, i) => (
-              <ScrollReveal key={i} delay={i * 80}>
-                <div className="card-lift rounded-2xl p-8 bg-surface border border-border h-full relative group cursor-pointer">
-                  {service.tag && (
-                    <span className="absolute top-4 right-4 badge-blue text-xs px-3 py-1">{service.tag}</span>
-                  )}
-                  <div className="w-14 h-14 rounded-xl bg-trust-blue-light flex items-center justify-center mb-6 transition-colors group-hover:bg-trust-blue">
-                    <service.icon className="w-7 h-7 text-trust-blue transition-colors group-hover:text-primary-foreground" />
-                  </div>
-                  <h3 className="text-lg font-bold text-foreground mb-3">{service.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{service.desc}</p>
-                  <button className="mt-6 text-sm font-semibold text-trust-blue flex items-center gap-1 group/btn">
-                    자세히 보기
-                    <ChevronRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-                  </button>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
+          <ScrollReveal delay={120}>
+            <div className="relative max-w-6xl mx-auto">
+              {/* Glass navigation buttons (PC only) */}
+              <button
+                type="button"
+                className="services-swiper-prev hidden md:flex items-center justify-center absolute -left-2 lg:-left-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-navy hover:bg-white/20 transition"
+                aria-label="이전 서비스"
+              >
+                <ChevronRight className="w-5 h-5 rotate-180" />
+              </button>
+              <button
+                type="button"
+                className="services-swiper-next hidden md:flex items-center justify-center absolute -right-2 lg:-right-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-navy hover:bg-white/20 transition"
+                aria-label="다음 서비스"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+
+              <Swiper
+                modules={[Autoplay, Navigation]}
+                navigation={{
+                  prevEl: ".services-swiper-prev",
+                  nextEl: ".services-swiper-next",
+                }}
+                autoplay={{
+                  delay: 3500,
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: true,
+                }}
+                loop
+                spaceBetween={16}
+                slidesPerView={1}
+                breakpoints={{
+                  768: { slidesPerView: 2, spaceBetween: 18 },
+                  1024: { slidesPerView: 4, spaceBetween: 18 },
+                }}
+              >
+                {[
+                  {
+                    title: "노무체계정비 컨설팅",
+                    desc: "취업규칙, 근로계약서, 임금체계 등 노무제도 전반 정비",
+                    tag: "BEST",
+                    href: "/service/labor-system",
+                    image:
+                      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=60",
+                  },
+                  {
+                    title: "HR 컨설팅",
+                    desc: "인사제도, 평가·보상체계, 조직문화 진단 및 개선",
+                    href: "/service/hr-consulting",
+                    image:
+                      "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&w=1400&q=60",
+                  },
+                  {
+                    title: "중대재해처벌법 대응",
+                    desc: "안전보건관리체계 구축 및 정기 점검 컨설팅",
+                    href: "/service/serious-accident",
+                    image:
+                      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1400&q=60",
+                  },
+                  {
+                    title: "도급/파견 컨설팅",
+                    desc: "적법한 도급·파견 구조 설계 및 리스크 점검",
+                    href: "/service/dispatch-consulting",
+                    image:
+                      "https://images.unsplash.com/photo-1521791055366-0d553872125f?auto=format&fit=crop&w=1400&q=60",
+                  },
+                  {
+                    title: "ESG 진단 및 구축",
+                    desc: "ESG 기준에 맞는 근로환경 및 거버넌스 체계 구축",
+                    href: "/service/esg",
+                    image:
+                      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1400&q=60",
+                  },
+                  {
+                    title: "고용노동부 컨설팅",
+                    desc: "정부지원사업 연계 및 노동부 근로감독 대응",
+                    href: "/service/ministry-consulting",
+                    image:
+                      "https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?auto=format&fit=crop&w=1400&q=60",
+                  },
+                ].map((service) => (
+                  <SwiperSlide key={service.title}>
+                    <Link
+                      to={service.href}
+                      className="block h-[420px] md:h-[440px] rounded-[18px] overflow-hidden relative group cursor-pointer focus:outline-none focus:ring-2 focus:ring-trust-blue/40 focus:ring-offset-2 focus:ring-offset-background"
+                      aria-label={`${service.title} 자세히 보기`}
+                    >
+                      <img
+                        src={service.image}
+                        alt={service.title}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[400ms] group-hover:scale-[1.05]"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
+
+                      {service.tag ? (
+                        <span className="absolute top-4 left-4 badge-blue bg-primary-foreground/10 text-primary-foreground border border-primary-foreground/20 backdrop-blur-sm text-xs px-3 py-1">
+                          {service.tag}
+                        </span>
+                      ) : null}
+
+                      <div className="absolute inset-x-0 bottom-0 p-6 md:p-7 transition-transform duration-[400ms] group-hover:-translate-y-1">
+                        <h3 className="text-lg font-bold text-primary-foreground">{service.title}</h3>
+                        <p className="mt-2 text-sm text-primary-foreground/75 leading-relaxed">
+                          {service.desc}
+                        </p>
+                        <span className="mt-5 text-sm font-semibold text-trust-blue flex items-center gap-1 group/btn">
+                          자세히 보기
+                          <ChevronRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+                        </span>
+                      </div>
+                    </Link>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -312,8 +481,18 @@ const HomePage = () => {
       </section>
 
       {/* ===== CTA Section ===== */}
-      <section className="section-dark py-20">
-        <div className="container mx-auto px-4 text-center">
+      <section className="section-dark relative overflow-hidden py-20">
+        <img
+          src={banner2}
+          alt=""
+          className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-center"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-0 z-[1] bg-[#121726]/80"
+          aria-hidden
+        />
+        <div className="container relative z-10 mx-auto px-4 text-center">
           <ScrollReveal>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               우리 회사 노무 리스크를
