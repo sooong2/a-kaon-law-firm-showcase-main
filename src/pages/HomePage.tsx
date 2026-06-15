@@ -129,16 +129,23 @@ const HomePage = () => {
             </Link>
           </div>
 
-          {/* Hero Stats */}
+          {/* Hero Stats — fade-up(0.9s) 이후 천천히 숫자 카운트업 */}
           <div className="flex flex-wrap justify-center gap-8 md:gap-16 mt-16 animate-fade-up" style={{ animationDelay: "0.9s" }}>
             {[
-              { value: "92", unit: "%", label: "고객 만족도" },
-              { value: "24", unit: "시간", label: "신속 대응" },
-              { value: "2800", unit: "건+", label: "누적 상담 건수" },
-            ].map((stat) => (
+              { value: 92, unit: "%", label: "고객 만족도" },
+              { value: 24, unit: "시간", label: "신속 대응" },
+              { value: 2800, unit: "건+", label: "누적 상담 건수" },
+            ].map((stat, index) => (
               <div key={stat.label} className="text-center">
                 <p className="text-3xl md:text-4xl font-black text-primary-foreground">
-                  {stat.value}<span className="text-trust-blue text-xl ml-1">{stat.unit}</span>
+                  <CountUp
+                    end={stat.value}
+                    duration={3200}
+                    delay={1000 + index * 200}
+                    startOnMount
+                    className="text-primary-foreground"
+                  />
+                  <span className="text-trust-blue text-xl ml-1">{stat.unit}</span>
                 </p>
                 <p className="text-primary-foreground/60 text-sm mt-1">{stat.label}</p>
               </div>
